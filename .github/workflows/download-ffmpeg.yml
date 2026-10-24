@@ -1,7 +1,7 @@
 name: Download FFmpeg
 run-name: "Download FFmpeg ${{ inputs.ffmpeg_tag }}${{ inputs.release && ' (release)' || '' }}"
 
-# The ffmpeg.exe and ffprobe.exe YTPlus downloads for yt-dlp to merge and
+# The ffmpeg.exe and ffprobe.exe Lumtub downloads for yt-dlp to merge and
 # repackage downloads. Built apart from the FFmpeg inside libmpv, which
 # playback needs in full: see download-ffmpeg/build.sh.
 
@@ -140,7 +140,7 @@ jobs:
           python -m pip install -q yt-dlp
           ./ffmpeg/ffmpeg.exe -hide_banner -version | Select-Object -First 1
           # HTTPS goes through Windows' own TLS (SChannel).
-          $probe = ./ffmpeg/ffprobe.exe -v error -i https://github.com/0x696c757a696f/ytplus-media-builds 2>&1 | Out-String
+          $probe = ./ffmpeg/ffprobe.exe -v error -i https://github.com/0x696c757a696f/lumtub-media-builds 2>&1 | Out-String
           if ($probe -match 'Protocol not found|not supported|TLS') { throw "HTTPS failed: $probe" }
           Push-Location samples
           python -I ../download-ffmpeg/check_merge.py ../ffmpeg
@@ -171,5 +171,5 @@ jobs:
           tag="ffmpeg-$FFMPEG_TAG-$(date -u +%Y%m%d)-${GITHUB_RUN_NUMBER}"
           gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "Download FFmpeg $FFMPEG_TAG" \
-            --notes "ffmpeg.exe and ffprobe.exe for YTPlus downloads (LGPL, built by download-ffmpeg/build.sh). Each ZIP's BUILD.txt names the exact sources and configuration." \
+            --notes "ffmpeg.exe and ffprobe.exe for Lumtub downloads (LGPL, built by download-ffmpeg/build.sh). Each ZIP's BUILD.txt names the exact sources and configuration." \
             ffmpeg-download-*.zip sha256.txt

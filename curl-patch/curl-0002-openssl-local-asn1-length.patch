@@ -1,5 +1,5 @@
 From 653a0a2263aaaed2dc71098e77727f064ace906d Mon Sep 17 00:00:00 2001
-From: YTPlus Media Builds <builds@ytplus.invalid>
+From: Lumtub Media Builds <builds@lumtub.invalid>
 Date: Sat, 24 Oct 2026 15:05:48 +0000
 Subject: [PATCH] openssl: use the local ASN1_STRING_get_length fallback
 

@@ -1,7 +1,7 @@
 From ed19332cb191eff35b1b71e8abc58a925a690210 Mon Sep 17 00:00:00 2001
-From: YTPlus Media Builds <builds@ytplus.invalid>
+From: Lumtub Media Builds <builds@lumtub.invalid>
 Date: Sat, 24 Oct 2026 10:10:36 +0200
-Subject: [PATCH] Build GPL YTPlus Windows libmpv
+Subject: [PATCH] Build GPL Lumtub Windows libmpv
 
 ---
  cmake/packages_check.cmake |  6 +-----
@@ -95,8 +95,8 @@ index a2954d5..716d289 100644
 -
 -    COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
 -    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}${x86_64_LEVEL}-${BUILDDATE}
-+    COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}-ytplus${x86_64_LEVEL}-${BUILDDATE}
-+    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}-ytplus${x86_64_LEVEL}-${BUILDDATE}
++    COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}-lumtub${x86_64_LEVEL}-${BUILDDATE}
++    COMMAND ${RENAME} <SOURCE_DIR> ${CMAKE_BINARY_DIR}/mpv-dev-${TARGET_CPU}-lumtub${x86_64_LEVEL}-${BUILDDATE}
      COMMENT "Moving mpv package folder"
      LOG 1
  )

@@ -152,7 +152,7 @@ jobs:
           path: "*.patch"
 
   build_mpv:
-    name: Build YTPlus libmpv - ${{ matrix.bit }}
+    name: Build Lumtub libmpv - ${{ matrix.bit }}
     needs: params
     runs-on: ubuntu-latest
     container:
@@ -370,7 +370,7 @@ jobs:
               git am --3way "$patch" || git am --abort
             done
           fi
-          git am --3way ../compile-ytplus-libmpv.patch
+          git am --3way ../compile-lumtub-libmpv.patch
           # curl from its latest release, patched to build against the OpenSSL
           # snapshot mpv-winbuild-cmake pins: that snapshot reports 4.1.0 but
           # predates ASN1_STRING_get_length(), which curl expects from 4.1.0.
@@ -425,7 +425,7 @@ jobs:
             
             let { stdout: ffmpeg_hash } = await exec.getExecOutput("git -C mpv-winbuild-cmake/src_packages/ffmpeg rev-parse --short HEAD");
             ffmpeg_hash = ffmpeg_hash.trim();
-            const ffmpeg_name = `ffmpeg-ytplus-${arch}-git-${ffmpeg_hash}`;
+            const ffmpeg_name = `ffmpeg-lumtub-${arch}-git-${ffmpeg_hash}`;
             core.exportVariable( 'ffmpeg_name', ffmpeg_name );
             const globber = await glob.create(`./mpv-winbuild-cmake/build${{ matrix.bit }}/**/ffmpeg.exe`);
             const ffmpeg_path = (await globber.glob())[0]

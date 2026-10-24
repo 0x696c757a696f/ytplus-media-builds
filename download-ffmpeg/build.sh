@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the ffmpeg.exe and ffprobe.exe YTPlus gives yt-dlp for downloads.
+# Builds the ffmpeg.exe and ffprobe.exe Lumtub gives yt-dlp for downloads.
 #
 #   build.sh <x86_64|x86_64-v3|aarch64> <ffmpeg source> <zlib source> <output folder>
 #
@@ -73,10 +73,10 @@ make -j"$(nproc)" > make.log 2>&1 || { tail -60 make.log; exit 1; }
 # What the LGPL asks to ship with it: the licence and where the source is.
 cp "$src/COPYING.LGPLv2.1" "$out/"
 {
-  echo "FFmpeg $(git -C "$src" describe --tags --always) for YTPlus downloads ($arch)"
+  echo "FFmpeg $(git -C "$src" describe --tags --always) for Lumtub downloads ($arch)"
   echo "Source: https://github.com/FFmpeg/FFmpeg/tree/$(git -C "$src" rev-parse HEAD)"
   echo "zlib: https://github.com/madler/zlib/tree/$(git -C "$zlib" rev-parse HEAD)"
-  echo "Built by https://github.com/0x696c757a696f/ytplus-media-builds (download-ffmpeg/build.sh)"
+  echo "Built by https://github.com/0x696c757a696f/lumtub-media-builds (download-ffmpeg/build.sh)"
   echo
   echo "Configuration: $(sed -n 's/^#define FFMPEG_CONFIGURATION "\(.*\)"$/\1/p' config.h)"
   grep -m1 -A0 '^License' configure.log
