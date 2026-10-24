@@ -25,12 +25,10 @@ on:
         default: "all-64bit"
         type: choice
         options:
-        - 32bit
         - 64bit
         - 64bit-v3
         - aarch64
         - all-64bit
-        - all
       trigger_build:
         description: "Trigger mpv build action after toolchain build"
         required: false

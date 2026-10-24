@@ -11,32 +11,26 @@ main() {
     simple_package=$3
 
     prepare
-    if [ "$target" == "32" ]; then
-        package "32" 
-    elif [ "$target" == "64" ]; then
+    if [ "$target" == "64" ]; then
         package "64"
     elif [ "$target" == "64-v3" ]; then
         package "64-v3"
     elif [ "$target" == "aarch64" ]; then
         package "aarch64"
-    elif [ "$target" == "all-64" ]; then
+    elif [ "$target" == "all-64" ] || [ "$target" == "all" ]; then
         package "64"
         package "64-v3"
         package "aarch64"
-    else [ "$target" == "all" ];
-        package "32"
-        package "64"
-        package "64-v3"
-        package "aarch64"
+    else
+        echo "Unsupported build target: $target" >&2
+        exit 2
     fi
     rm -rf ./release/mpv-packaging-master
 }
 
 package() {
     local bit=$1
-    if [ $bit == "32" ]; then
-        local arch="i686"
-    elif [ $bit == "64" ]; then
+    if [ $bit == "64" ]; then
         local arch="x86_64"
     elif [ $bit == "64-v3" ]; then
         local arch="x86_64"

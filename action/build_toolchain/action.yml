@@ -42,9 +42,7 @@ runs:
         buildroot=$(pwd)
         srcdir=$(pwd)/src_packages
 
-        if [ $bit == "32" ]; then
-            arch="i686"
-        elif [ $bit == "64" ]; then
+        if [ $bit == "64" ]; then
             arch="x86_64"
         elif [ $bit == "64-v3" ]; then
             arch="x86_64"
