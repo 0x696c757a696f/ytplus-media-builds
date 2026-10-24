@@ -371,7 +371,16 @@ jobs:
             done
           fi
           git am --3way ../compile-ytplus-libmpv.patch
+          # curl's master branch stopped building here on 2026-10-24; use its latest release.
+          sed -i 's|^\( *\)GIT_REPOSITORY https://github.com/curl/curl.git$|&\n\1GIT_TAG curl-8_23_0|' packages/curl.cmake
+          grep -q 'GIT_TAG curl-8_23_0' packages/curl.cmake
           bash ../build.sh -t '${{ matrix.bit }}' -c '${{ inputs.compiler }}' -s true
+      - name: Show the failed package's log
+        if: ${{ failure() && steps.build.outcome == 'failure' }}
+        run: |
+          for log in $(grep -lE 'FAILED:|error:' mpv-winbuild-cmake/build${{ matrix.bit }}/packages/*-prefix/src/*-stamp/*-out.log mpv-winbuild-cmake/build${{ matrix.bit }}/packages/*-prefix/src/*-stamp/*-err.log 2>/dev/null); do
+            echo "::group::$log"; grep -nE -B5 -A10 'FAILED:|error:' "$log" | tail -n 120; echo "::endgroup::"
+          done
       - name: Collect logs
         if: ${{ always() }}
         run: |
