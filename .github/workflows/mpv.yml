@@ -389,7 +389,7 @@ jobs:
         with:
           script: |
             const path = require('path');
-            const types = ["mpv-debug", "mpv-dev", "mpv"];
+            const types = ["mpv-dev"];
             let arch="";
             switch ( "${{ matrix.bit }}" ) {
               case "64":
@@ -651,11 +651,11 @@ jobs:
               "aarch64": "for ARM64(aarch64)"
             }
             async function getTips(arch){
-              const globber = await glob.create(`artifacts/mpv-${arch}-[0-9]*.7z`);
+              const globber = await glob.create(`artifacts/mpv-dev-${arch}-*.7z`);
               const files = await globber.glob();
               if ( files.length > 0 ) {
                 const name = path.basename(files[0]);
-                return `[${name}](https://github.com/${{github.repository}}/releases/download/${{ env.tag_name }}/${name}): ${tips[arch]}\n`
+                return `[${name}](https://github.com/${{github.repository}}/releases/download/${{ env.tag_name }}/${name}): GPL libmpv for ${tips[arch]}\n`
               } else {
                 return ""
               }
