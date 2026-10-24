@@ -19,6 +19,11 @@ on:
         - 64bit-v3
         - aarch64
         - all-64bit
+      lgpl:
+        description: "Also build the LGPL libmpv variant"
+        required: false
+        default: false
+        type: boolean
       compiler:
         required: false
         default: "clang"
@@ -91,6 +96,8 @@ jobs:
                 break;
             }
             core.setOutput("matrix_bit",JSON.stringify(matrix));
+            matrix.variant = ["standard"];
+            if ("${{ inputs.lgpl }}" == "true") matrix.variant.push("lgpl");
             core.setOutput("matrix",JSON.stringify(matrix));
 
             const fs = require('fs/promises');
@@ -152,7 +159,7 @@ jobs:
           path: "*.patch"
 
   build_mpv:
-    name: Build MPV - ${{ matrix.bit }}
+    name: Build MPV - ${{ matrix.bit }} (${{ matrix.variant }})
     needs: params
     runs-on: ubuntu-latest
     container:
@@ -286,7 +293,7 @@ jobs:
           update_packager_index: false
           install_ccache: false
           restore_cache: ${{ inputs.needclean != true }}
-          store_cache: ${{ inputs.no_save_cache != true }}
+          store_cache: ${{ matrix.variant == 'standard' && inputs.no_save_cache != true }}
           override_cache_key: ccache-build${{ matrix.bit }}-${{ inputs.compiler }}
           ccache_options: |
             cache_dir=${{ github.workspace }}/.ccache
@@ -370,7 +377,10 @@ jobs:
               git am --3way "$patch" || git am --abort
             done
           fi
-          bash ../build.sh -t '${{ matrix.bit }}' -c '${{ inputs.compiler }}'
+          if [ "${{ matrix.variant }}" = "lgpl" ]; then
+            git am --3way ../compile-lgpl-libmpv.patch
+          fi
+          bash ../build.sh -t '${{ matrix.bit }}' -c '${{ inputs.compiler }}' -s "${{ matrix.variant == 'lgpl' && 'true' || 'false' }}"
       - name: Collect logs
         if: ${{ always() }}
         run: |
@@ -379,7 +389,7 @@ jobs:
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
-          name: ${{ matrix.bit }}_logs
+          name: ${{ matrix.bit }}-${{ matrix.variant }}_logs
           path: logs.7z
 
       - name: "Get artifacts' name and path"
@@ -389,6 +399,7 @@ jobs:
           script: |
             const path = require('path');
             const types = ["mpv-debug", "mpv-dev", "mpv"];
+            const lgpl = "${{ matrix.variant }}" === "lgpl" ? "-lgpl" : "";
             let arch="";
             switch ( "${{ matrix.bit }}" ) {
               case "64":
@@ -412,7 +423,7 @@ jobs:
             
             let { stdout: ffmpeg_hash } = await exec.getExecOutput("git -C mpv-winbuild-cmake/src_packages/ffmpeg rev-parse --short HEAD");
             ffmpeg_hash = ffmpeg_hash.trim();
-            const ffmpeg_name = `ffmpeg-${arch}-git-${ffmpeg_hash}`;
+            const ffmpeg_name = `ffmpeg${lgpl}-${arch}-git-${ffmpeg_hash}`;
             core.exportVariable( 'ffmpeg_name', ffmpeg_name );
             const globber = await glob.create(`./mpv-winbuild-cmake/build${{ matrix.bit }}/**/ffmpeg.exe`);
             const ffmpeg_path = (await globber.glob())[0]
@@ -445,25 +456,25 @@ jobs:
           archive: false
 
       - name: Save clang sysroot cache
-        if: ${{ inputs.compiler =='clang' && inputs.no_save_cache != true }}
+        if: ${{ inputs.compiler =='clang' && inputs.no_save_cache != true && matrix.variant == 'standard' }}
         uses: actions/cache/save@v6.1.0
         with: 
           path: ${{ github.workspace }}/mpv-winbuild-cmake/clang_root
           key: ${{ matrix.bit }}-clang_root-${{ env.cache_suffix }}
       - name: Save Sources Cache
-        if: ${{ inputs.no_save_cache != true }}
+        if: ${{ inputs.no_save_cache != true && matrix.variant == 'standard' }}
         uses: actions/cache/save@v6.1.0
         with:
           path: ${{ github.workspace }}/mpv-winbuild-cmake/src_packages
           key: source-${{ env.cache_suffix }}
       - name: Save Rust Cache
-        if: ${{ inputs.no_save_cache != true }}
+        if: ${{ inputs.no_save_cache != true && matrix.variant == 'standard' }}
         uses: actions/cache/save@v6.1.0
         with:
           path: ${{ github.workspace }}/mpv-winbuild-cmake/install_rustup
           key: rust-${{ env.cache_suffix }}
       - name: Save Build Cache
-        if: ${{ inputs.no_save_cache != true }}
+        if: ${{ inputs.no_save_cache != true && matrix.variant == 'standard' }}
         uses: actions/cache/save@v6.1.0
         with:
           path: ${{ github.workspace }}/mpv-winbuild-cmake/build${{ matrix.bit }}
